@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 
-class Input extends Component {
+class PlaceInput extends Component {
     state = {
         placeName: ''
     }
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Input;
+export default PlaceInput;
