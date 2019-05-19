@@ -3,8 +3,8 @@ import { TextInput, StyleSheet } from 'react-native';
 
 const defaultInput = props => (
 	<TextInput
-		style={styles.input}
 		{...props}
+		style={[styles.input, props.style]}
 	/>
 );
 
