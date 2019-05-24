@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const startTabs = async () => {
 	const map = await Icon.getImageSource("md-map", 30);
-	const share = await Icon.getImageSource("ios-share-alt", 30);
+	const share = await Icon.getImageSource("ios-share", 30);
 	const menu = await Icon.getImageSource("ios-menu", 30);
 	const navigatorButtons = {
 		leftButtons: [
