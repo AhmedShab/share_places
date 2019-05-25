@@ -33,6 +33,9 @@ const startTabs = async () => {
 				navigatorButtons
 			}
 		],
+		tabsStyle: {
+			tabBarSelectedButtonColor: 'orange'
+		},
 		drawer: {
 			left: {
 				screen: sideDrawerScreen

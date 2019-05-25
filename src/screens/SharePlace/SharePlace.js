@@ -13,6 +13,10 @@ import PickImage from '../../components/PickImage/PickImage';
 import PickLocation from '../../components/PickLocation/PickLocation';
 
 class SharePlaceScreen extends Component {
+	static navigatorStyle = {
+		navBarButtonColor: 'orange'
+	}
+	
 	constructor(props) {
 		super(props);
 		props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);

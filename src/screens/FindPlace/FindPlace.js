@@ -5,6 +5,10 @@ import PlaceList from '../../components/PlaceList/PlaceList';
 import { placeDetailsScreen, sideDrawerToggle } from '../../../constants';
 
 class FindPlaceScreen extends Component {
+	static navigatorStyle = {
+		navBarButtonColor: 'orange'
+	}
+	
 	constructor(props) {
 		super(props);
 		props.navigator.setOnNavigatorEvent(this.onNavigatorEvent);
