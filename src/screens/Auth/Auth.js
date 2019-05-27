@@ -7,6 +7,8 @@ import MainText from "../../components/UI/MainText/MainText";
 import backgroundImage from "../../assets/background.jpg";
 import ButtonWithBackground from "../../components/UI/ButtonWithBackground/ButtonWithBackground";
 import validate from "../../utility/validation";
+import { connect } from "react-redux";
+import { tryAuth } from "../../store/actions/auth";
 
 class AuthScreen extends Component {
 	constructor(props) {
@@ -61,6 +63,12 @@ class AuthScreen extends Component {
 	}
 
 	loginHandler = () => {
+		const { email, password } = this.state.controls;
+		const authData = {
+			email: email.valid,
+			password: password.value
+		};
+		this.props.onLogin(authData);
 		startTabs();
 	};
 
@@ -232,4 +240,13 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default AuthScreen;
+const mapDispatchToProps = dispatch => {
+	return {
+		onLogin: authData => dispatch(tryAuth(authData))
+	};
+};
+
+export default connect(
+	null,
+	mapDispatchToProps
+)(AuthScreen);
