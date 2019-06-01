@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Button, StyleSheet, Dimensions } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
 class PickLocation extends Component {
 	constructor(props) {
@@ -8,14 +8,15 @@ class PickLocation extends Component {
 
 		this.state = {
 			focusedLocation: {
-				latitude: 37.78825,
-				longitude: -122.4324,
-				latitudeDelta: 0.0922,
+				latitude: 37.7900352,
+				longitude: -122.4013726,
+				latitudeDelta: 0.0122,
 				longitudeDelta:
 					(Dimensions.get('window').width /
 						Dimensions.get('window').height) *
-					0.0922
-			}
+					0.0122
+			},
+			locationChosen: false
 		};
 	}
 
@@ -27,12 +28,18 @@ class PickLocation extends Component {
 					...prevState.focusedLocation,
 					latitude: coords.latitude,
 					longitude: coords.longitude
-				}
+				},
+				locationChosen: true
 			};
 		});
 	};
 
 	render() {
+		let marker = null;
+
+		if (this.state.locationChosen) {
+			marker = <Marker coordinate={this.state.focusedLocation} />;
+		}
 		return (
 			<View style={styles.container}>
 				<MapView
@@ -41,7 +48,9 @@ class PickLocation extends Component {
 					initialRegion={this.state.focusedLocation}
 					region={this.state.focusedLocation}
 					onPress={this.pickLocationHandler}
-				/>
+				>
+					{marker}
+				</MapView>
 				<View style={styles.button}>
 					<Button title='Locate me' />
 				</View>
