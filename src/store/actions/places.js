@@ -1,4 +1,4 @@
-import { ADD_PLACE, DELETE_PLACE } from './actionTypes';
+import { SET_PLACES } from './actionTypes';
 import { uiStartLoading, uiStopLoading } from './ui';
 const baseUrl = 'https://share-places-bc171.firebaseio.com/';
 
@@ -41,6 +41,39 @@ export const addPlace = (placeName, location, image) => {
 						dispatch(uiStopLoading());
 					});
 			});
+	};
+};
+
+export const getPlaces = () => {
+	return dispatch => {
+		fetch(`${baseUrl}/places.json`)
+			.catch(err => {
+				alert('Something went wrong, sorry :/');
+				console.log(err);
+			})
+			.then(res => res.json())
+			.then(parsedRes => {
+				const places = [];
+				for (const key in parsedRes) {
+					if (parsedRes.hasOwnProperty(key)) {
+						places.push({
+							...parsedRes[key],
+							image: {
+								uri: parsedRes[key].image
+							},
+							key
+						});
+					}
+				}
+				dispatch(setPlaces(places));
+			});
+	};
+};
+
+export const setPlaces = places => {
+	return {
+		type: SET_PLACES,
+		places
 	};
 };
 
