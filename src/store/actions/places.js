@@ -78,8 +78,12 @@ export const setPlaces = places => {
 };
 
 export const deletePlace = key => {
-	return {
-		type: DELETE_PLACE,
-		placeKey: key
+	return dispatch => {
+		fetch(`${baseUrl}/places/${key}.json`, {
+			method: 'delete'
+		}).catch(err => {
+			alert('Something went wrong, sorry :/');
+			console.log(err);
+		});
 	};
 };
