@@ -1,4 +1,4 @@
-import { SET_PLACES } from './actionTypes';
+import { SET_PLACES, REMOVE_PLACE } from './actionTypes';
 import { uiStartLoading, uiStopLoading } from './ui';
 const baseUrl = 'https://share-places-bc171.firebaseio.com/';
 
@@ -79,11 +79,19 @@ export const setPlaces = places => {
 
 export const deletePlace = key => {
 	return dispatch => {
+		dispatch(removePlace(key));
 		fetch(`${baseUrl}/places/${key}.json`, {
 			method: 'delete'
 		}).catch(err => {
 			alert('Something went wrong, sorry :/');
 			console.log(err);
 		});
+	};
+};
+
+const removePlace = key => {
+	return {
+		type: REMOVE_PLACE,
+		key
 	};
 };
