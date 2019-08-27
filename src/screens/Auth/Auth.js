@@ -81,13 +81,13 @@ class AuthScreen extends Component {
 		Dimensions.removeEventListener('change', this.updateStyles);
 	}
 
-	loginHandler = () => {
+	authHandler = () => {
 		const { email, password } = this.state.controls;
 		const authData = {
 			email: email.value,
 			password: password.value
 		};
-		this.props.onLogin(authData);
+		this.props.onTryAuth(authData, this.state.authMode);
 	};
 
 	updateInputState = (key, value) => {
@@ -149,7 +149,7 @@ class AuthScreen extends Component {
 		let submitButton = (
 			<ButtonWithBackground
 				color='#29aaf4'
-				onPress={this.loginHandler}
+				onPress={this.authHandler}
 				disabled={
 					(!this.state.controls.confirmPassword.valid &&
 						this.state.authMode === 'signup') ||
@@ -315,7 +315,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onLogin: authData => dispatch(tryAuth(authData))
+		onTryAuth: (authData, authMode) => dispatch(tryAuth(authData, authMode))
 	};
 };
 
