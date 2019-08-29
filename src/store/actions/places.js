@@ -1,11 +1,13 @@
 import { SET_PLACES, REMOVE_PLACE } from './actionTypes';
 import { uiStartLoading, uiStopLoading } from './ui';
+import { authGetToken } from './auth';
 const baseUrl = 'https://share-places-bc171.firebaseio.com/';
 
 export const addPlace = (placeName, location, image) => {
 	return async dispatch => {
 		dispatch(uiStartLoading());
 		try {
+			const token = await dispatch(authGetToken());
 			const imageRes = await fetch(
 				'https://us-central1-share-places-bc171.cloudfunctions.net/storeImage',
 				{
@@ -44,8 +46,11 @@ export const addPlace = (placeName, location, image) => {
 export const getPlaces = () => {
 	return async dispatch => {
 		try {
-			const res = await fetch(`${baseUrl}/places.json`);
-			const parsedRes = res.json();
+			const token = await dispatch(authGetToken());
+			const res = await fetch(`${baseUrl}/places.json?auth=${token}`);
+			const parsedRes = await res.json();
+
+			console.log(parsedRes);
 
 			const places = [];
 			for (const key in parsedRes) {
@@ -62,7 +67,7 @@ export const getPlaces = () => {
 			dispatch(setPlaces(places));
 		} catch (error) {
 			alert('Something went wrong, sorry :/');
-			console.log(err);
+			console.log(error);
 		}
 	};
 };
@@ -78,7 +83,8 @@ export const deletePlace = key => {
 	return async dispatch => {
 		dispatch(removePlace(key));
 		try {
-			await fetch(`${baseUrl}/places/${key}.json`, {
+			const token = await dispatch(authGetToken());
+			await fetch(`${baseUrl}/places/${key}.json?auth=${token}`, {
 				method: 'delete'
 			});
 		} catch (error) {

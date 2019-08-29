@@ -46,3 +46,19 @@ const authSetToken = token => {
 		token
 	};
 };
+
+export const authGetToken = () => {
+	return (dispatch, getState) => {
+		const promise = new Promise((resolve, reject) => {
+			const { token } = getState().auth;
+
+			if (!token) {
+				reject();
+			} else {
+				resolve(token);
+			}
+		});
+
+		return promise;
+	};
+};
