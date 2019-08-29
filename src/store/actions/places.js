@@ -3,70 +3,67 @@ import { uiStartLoading, uiStopLoading } from './ui';
 const baseUrl = 'https://share-places-bc171.firebaseio.com/';
 
 export const addPlace = (placeName, location, image) => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch(uiStartLoading());
-		fetch(
-			'https://us-central1-share-places-bc171.cloudfunctions.net/storeImage',
-			{
-				method: 'POST',
-				body: JSON.stringify({
-					image: image.base64
-				})
-			}
-		)
-			.catch(err => {
-				console.log(err);
-				alert('Something went wrong, please try again!');
-				dispatch(uiStopLoading());
-			})
-			.then(res => res.json())
-			.then(parsedRes => {
-				const placeData = {
-					name: placeName,
-					location,
-					image: parsedRes.imageUrl
-				};
-				fetch(`${baseUrl}/places.json`, {
-					method: 'post',
-					body: JSON.stringify(placeData)
-				})
-					.catch(err => {
-						console.log(err);
-						alert('Something went wrong, please try again!');
-						dispatch(uiStopLoading());
+		try {
+			const imageRes = await fetch(
+				'https://us-central1-share-places-bc171.cloudfunctions.net/storeImage',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						image: image.base64
 					})
-					.then(res => res.json())
-					.then(parsedRes => {
-						console.log(parsedRes);
-						dispatch(uiStopLoading());
-					});
+				}
+			);
+
+			const parsedImageRes = await imageRes.json();
+
+			const placeData = {
+				name: placeName,
+				location,
+				image: parsedImageRes.imageUrl
+			};
+
+			const placesRes = await fetch(`${baseUrl}/places.json`, {
+				method: 'post',
+				body: JSON.stringify(placeData)
 			});
+
+			const parsedPlacesRes = await placesRes.json();
+
+			console.log(parsedPlacesRes);
+			dispatch(uiStopLoading());
+		} catch (err) {
+			console.log(err);
+			alert('Something went wrong, please try again!');
+			dispatch(uiStopLoading());
+		}
 	};
 };
 
 export const getPlaces = () => {
-	return dispatch => {
-		fetch(`${baseUrl}/places.json`)
-			.catch(err => {
-				alert('Something went wrong, sorry :/');
-				console.log(err);
-			})
-			.then(res => res.json())
-			.then(parsedRes => {
-				const places = [];
-				for (const key in parsedRes) {
-					if (parsedRes.hasOwnProperty(key)) {
-						places.push({
-							...parsedRes[key],
-							image: {
-								uri: parsedRes[key].image
-							},
-							key
-						});
-					}
+	return async dispatch => {
+		try {
+			const res = await fetch(`${baseUrl}/places.json`);
+			const parsedRes = res.json();
+
+			const places = [];
+			for (const key in parsedRes) {
+				if (parsedRes.hasOwnProperty(key)) {
+					places.push({
+						...parsedRes[key],
+						image: {
+							uri: parsedRes[key].image
+						},
+						key
+					});
 				}
-				dispatch(setPlaces(places));
-			});
+			}
+			dispatch(setPlaces(places));
+		} catch (error) {
+			alert('Something went wrong, sorry :/');
+			console.log(err);
+		}
 	};
 };
 
@@ -78,14 +75,16 @@ export const setPlaces = places => {
 };
 
 export const deletePlace = key => {
-	return dispatch => {
+	return async dispatch => {
 		dispatch(removePlace(key));
-		fetch(`${baseUrl}/places/${key}.json`, {
-			method: 'delete'
-		}).catch(err => {
+		try {
+			await fetch(`${baseUrl}/places/${key}.json`, {
+				method: 'delete'
+			});
+		} catch (error) {
 			alert('Something went wrong, sorry :/');
-			console.log(err);
-		});
+			console.log(error);
+		}
 	};
 };
 
