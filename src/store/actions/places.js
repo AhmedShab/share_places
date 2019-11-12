@@ -9,12 +9,15 @@ export const addPlace = (placeName, location, image) => {
 		try {
 			const token = await dispatch(authGetToken());
 			const imageRes = await fetch(
-				'https://us-central1-share-places-bc171.cloudfunctions.net/storeImage',
+				'http://localhost:5001/share-places-bc171/us-central1/storeImage',
 				{
 					method: 'POST',
 					body: JSON.stringify({
 						image: image.base64
-					})
+					}),
+					headers: {
+						authorization: `Bearer ${token}`
+					}
 				}
 			);
 
@@ -26,10 +29,13 @@ export const addPlace = (placeName, location, image) => {
 				image: parsedImageRes.imageUrl
 			};
 
-			const placesRes = await fetch(`${baseUrl}/places.json`, {
-				method: 'post',
-				body: JSON.stringify(placeData)
-			});
+			const placesRes = await fetch(
+				`${baseUrl}/places.json?auth=${token}`,
+				{
+					method: 'post',
+					body: JSON.stringify(placeData)
+				}
+			);
 
 			const parsedPlacesRes = await placesRes.json();
 
